@@ -28,9 +28,9 @@ namespace MercuryHost
         private static async Task<MercuryLibrary.Models.WhoisResponse> GetWhoisResponse(
             string apiUrlFormat,
             string domain)
-        { 
+        {
             MercuryLibrary.Models.WhoisResponse response = null;
-            
+
             if (string.IsNullOrWhiteSpace(apiUrlFormat))
             {
                 throw new ArgumentException(nameof(apiUrlFormat));
@@ -59,8 +59,9 @@ namespace MercuryHost
 
                 await using Stream reader = await apiResponse.Content.ReadAsStreamAsync(cancellationToken);
 
-                MercuryLibrary.Models.WhoisRecord whoisRecord = (MercuryLibrary.Models.WhoisRecord) serializer.Deserialize(reader);
-                
+                MercuryLibrary.Models.WhoisRecord whoisRecord =
+                    (MercuryLibrary.Models.WhoisRecord) serializer.Deserialize(reader);
+
                 if (whoisRecord != null &&
                     whoisRecord.audit != null)
                 {
