@@ -6,4 +6,8 @@
     <RootNamespace>MercuryHost</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MercuryLibrary\MercuryLibrary.fsproj" />
+  </ItemGroup>
+
 </Project>
