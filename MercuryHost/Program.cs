@@ -31,15 +31,7 @@ namespace MercuryHost
         {
             MercuryLibrary.Models.WhoisResponse response = null;
 
-            if (string.IsNullOrWhiteSpace(apiUrlFormat))
-            {
-                throw new ArgumentException(nameof(apiUrlFormat));
-            }
-
-            if (string.IsNullOrWhiteSpace(domain))
-            {
-                throw new ArgumentException(nameof(domain));
-            }
+            MercuryLibrary.InputValidation.whoisInputValidation(apiUrlFormat, domain);
 
             var apiUrl = string.Format(apiUrlFormat, domain);
 
