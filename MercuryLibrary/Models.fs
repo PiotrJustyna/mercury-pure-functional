@@ -1,4 +1,4 @@
-﻿module MercuryLibrary
+﻿module MercuryLibrary.Models
 
 open System
 

@@ -17,7 +17,7 @@ namespace MercuryHost
 
             var domain = args[1];
 
-            MercuryLibrary.WhoisResponse response = await GetWhoisResponse(
+            MercuryLibrary.Models.WhoisResponse response = await GetWhoisResponse(
                 apiUrlFormat,
                 domain);
 
@@ -25,11 +25,11 @@ namespace MercuryHost
             Log($"function execution finished");
         }
 
-        private static async Task<MercuryLibrary.WhoisResponse> GetWhoisResponse(
+        private static async Task<MercuryLibrary.Models.WhoisResponse> GetWhoisResponse(
             string apiUrlFormat,
             string domain)
         {
-            MercuryLibrary.WhoisResponse response = null;
+            MercuryLibrary.Models.WhoisResponse response = null;
             
             if (string.IsNullOrWhiteSpace(apiUrlFormat))
             {
@@ -55,11 +55,11 @@ namespace MercuryHost
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                var serializer = new XmlSerializer(typeof(MercuryLibrary.WhoisRecord));
+                var serializer = new XmlSerializer(typeof(MercuryLibrary.Models.WhoisRecord));
 
                 await using Stream reader = await apiResponse.Content.ReadAsStreamAsync(cancellationToken);
 
-                MercuryLibrary.WhoisRecord whoisRecord = (MercuryLibrary.WhoisRecord) serializer.Deserialize(reader);
+                MercuryLibrary.Models.WhoisRecord whoisRecord = (MercuryLibrary.Models.WhoisRecord) serializer.Deserialize(reader);
                 
                 if (whoisRecord != null &&
                     whoisRecord.audit != null)
@@ -76,7 +76,7 @@ namespace MercuryHost
 
                     var now = DateTime.UtcNow;
 
-                    response = new MercuryLibrary.WhoisResponse(
+                    response = new MercuryLibrary.Models.WhoisResponse(
                         domain,
                         (now - createdDate).Days,
                         (now - updatedDate).Days,
