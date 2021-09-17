@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using MercuryLibrary;
 
 namespace MercuryHost
 {
@@ -18,7 +17,7 @@ namespace MercuryHost
 
             var domain = args[1];
 
-            Models.WhoisResponse response = await GetWhoisResponse(
+            MercuryLibrary.Models.WhoisResponse response = await GetWhoisResponse(
                 apiUrlFormat,
                 domain);
 
@@ -26,18 +25,21 @@ namespace MercuryHost
             Log("function execution finished");
         }
 
-        public static bool IsValid(Models.WhoisRecord whoisRecord)
-        {
-            return whoisRecord is {audit: { }};
-        }
-        
-        private static async Task<Models.WhoisResponse> GetWhoisResponse(
+        private static async Task<MercuryLibrary.Models.WhoisResponse> GetWhoisResponse(
             string apiUrlFormat,
             string domain)
-        {
-            Models.WhoisResponse response = null;
+        { 
+            MercuryLibrary.Models.WhoisResponse response = null;
+            
+            if (string.IsNullOrWhiteSpace(apiUrlFormat))
+            {
+                throw new ArgumentException(nameof(apiUrlFormat));
+            }
 
-            InputValidation.whoisInputValidation(apiUrlFormat, domain);
+            if (string.IsNullOrWhiteSpace(domain))
+            {
+                throw new ArgumentException(nameof(domain));
+            }
 
             var apiUrl = string.Format(apiUrlFormat, domain);
 
@@ -53,15 +55,34 @@ namespace MercuryHost
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                var serializer = new XmlSerializer(typeof(Models.WhoisRecord));
+                var serializer = new XmlSerializer(typeof(MercuryLibrary.Models.WhoisRecord));
 
                 await using Stream reader = await apiResponse.Content.ReadAsStreamAsync(cancellationToken);
 
-                Models.WhoisRecord whoisRecord = (Models.WhoisRecord) serializer.Deserialize(reader);
+                MercuryLibrary.Models.WhoisRecord whoisRecord = (MercuryLibrary.Models.WhoisRecord) serializer.Deserialize(reader);
                 
-                if(IsValid(whoisRecord))
+                if (whoisRecord != null &&
+                    whoisRecord.audit != null)
                 {
-                    response = Mappers.toWhoisResponse(domain, whoisRecord);
+                    _ = DateTime.TryParse(whoisRecord.createdDate, out var createdDate);
+
+                    _ = DateTime.TryParse(whoisRecord.updatedDate, out var updatedDate);
+
+                    _ = DateTime.TryParse(whoisRecord.expiresDate, out var expiresDate);
+
+                    _ = DateTime.TryParse(whoisRecord.audit.createdDate, out var auditCreatedDate);
+
+                    _ = DateTime.TryParse(whoisRecord.audit.updatedDate, out var auditUpdatedDate);
+
+                    var now = DateTime.UtcNow;
+
+                    response = new MercuryLibrary.Models.WhoisResponse(
+                        domain,
+                        (now - createdDate).Days,
+                        (now - updatedDate).Days,
+                        (expiresDate - now).Days,
+                        auditCreatedDate,
+                        auditUpdatedDate);
                 }
             }
 
