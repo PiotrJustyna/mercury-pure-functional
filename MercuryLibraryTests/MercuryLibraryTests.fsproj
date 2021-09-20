@@ -9,7 +9,8 @@
 
     <ItemGroup>
         <Compile Include="InputValidationTests.fs" />
-        <Compile Include="Program.fs" />
+        <Compile Include="MappersTests.fs" />
+        <Compile Include="BusinessLogicTests.fs" />
     </ItemGroup>
 
     <ItemGroup>
