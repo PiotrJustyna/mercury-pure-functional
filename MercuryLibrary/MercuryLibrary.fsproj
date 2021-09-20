@@ -6,7 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Library.fs"/>
+        <Compile Include="Models.fs" />
+        <Compile Include="InputValidation.fs" />
+        <Compile Include="BusinessLogic.fs" />
+        <Compile Include="Mappers.fs" />
     </ItemGroup>
 
 </Project>
