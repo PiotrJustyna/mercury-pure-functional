@@ -3,9 +3,7 @@ module MercuryLibrary.Mappers
 open System
 open MercuryLibrary.Models
 
-let toWhoisResponse (domain: string) (whoisRecord: WhoisRecord) =
-    let now = DateTime.UtcNow
-
+let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) =
     let createdDate =
         match DateTime.TryParse whoisRecord.createdDate with
         | _, date -> date

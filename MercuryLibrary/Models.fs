@@ -17,9 +17,9 @@ type WhoisRecord =
 
 type WhoisResponse =
     { Domain: string
-      DomainAgeInDays: int
-      DomainLastUpdatedInDays: int
-      DomainExpirationInDays: int
+      DomainAgeInDays: float
+      DomainLastUpdatedInDays: float
+      DomainExpirationInDays: float
       AuditCreated: DateTime
       AuditUpdated: DateTime }
     override x.ToString() =

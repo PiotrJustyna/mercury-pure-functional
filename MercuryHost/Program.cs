@@ -61,7 +61,10 @@ namespace MercuryHost
                 
                 if(IsValid(whoisRecord))
                 {
-                    response = Mappers.toWhoisResponse(domain, whoisRecord);
+                    response = Mappers.toWhoisResponse(
+                        DateTime.Now,
+                        domain,
+                        whoisRecord);
                 }
             }
 
