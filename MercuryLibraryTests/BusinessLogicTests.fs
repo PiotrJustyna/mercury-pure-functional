@@ -2,7 +2,7 @@ module MercuryLibraryTests.BusinessLogicTests
 
 open System
 open Xunit
-open FsUnit
+open Swensen.Unquote
 
 [<Fact>]
 let ``differenceInDays finish date after start date`` () =
@@ -12,8 +12,7 @@ let ``differenceInDays finish date after start date`` () =
 
     let finish = now
 
-    MercuryLibrary.BusinessLogic.differenceInDays start finish
-    |> should equal 1
+    test <@ MercuryLibrary.BusinessLogic.differenceInDays start finish = 1.0 @>
 
 [<Fact>]
 let ``differenceInDays finish date before start date`` () =
@@ -23,8 +22,7 @@ let ``differenceInDays finish date before start date`` () =
 
     let start = now
 
-    MercuryLibrary.BusinessLogic.differenceInDays start finish
-    |> should equal -1
+    test <@ MercuryLibrary.BusinessLogic.differenceInDays start finish = -1.0 @>
 
 [<Fact>]
 let ``differenceInDays finish date equal to start date`` () =
@@ -34,5 +32,4 @@ let ``differenceInDays finish date equal to start date`` () =
 
     let start = now
 
-    MercuryLibrary.BusinessLogic.differenceInDays start finish
-    |> should equal 0
+    test <@ MercuryLibrary.BusinessLogic.differenceInDays start finish = 0.0 @>
