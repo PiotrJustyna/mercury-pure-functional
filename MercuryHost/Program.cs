@@ -26,11 +26,6 @@ namespace MercuryHost
             Log("function execution finished");
         }
 
-        public static bool IsValid(Models.WhoisRecord whoisRecord)
-        {
-            return whoisRecord is {audit: { }};
-        }
-        
         private static async Task<Models.WhoisResponse> GetWhoisResponse(
             string apiUrlFormat,
             string domain)
@@ -57,15 +52,12 @@ namespace MercuryHost
 
                 await using Stream reader = await apiResponse.Content.ReadAsStreamAsync(cancellationToken);
                 
-                Models.WhoisRecord whoisRecord = (Models.WhoisRecord) serializer.Deserialize(reader);
+                var whoisRecord = (Models.WhoisRecord) serializer.Deserialize(reader);
                 
-                if(IsValid(whoisRecord))
-                {
-                    response = Mappers.toWhoisResponse(
-                        DateTime.Now,
-                        domain,
-                        whoisRecord);
-                }
+                response = Mappers.toWhoisResponse(
+                    DateTime.Now,
+                    domain,
+                    whoisRecord);
             }
 
             return response;

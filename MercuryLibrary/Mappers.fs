@@ -3,6 +3,9 @@ module MercuryLibrary.Mappers
 open System
 open MercuryLibrary.Models
 
+// 2021-10-06 PJ:
+// --------------
+// TODO: This should ideally return Option<WhoisResponse> instead.
 let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) =
     let createdDate =
         match DateTime.TryParse whoisRecord.createdDate with
