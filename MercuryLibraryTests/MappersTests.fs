@@ -23,14 +23,16 @@ let ``toWhoisResponse all properties correct`` () =
 
     let fiveDaysAgo = now.AddDays(-5.0).ToString()
 
-    let whoisRecord =
-        { createdDate = oneDayAgo
-          updatedDate = twoDaysAgo
-          expiresDate = threeDaysFromNow
-          status = irrelevant
-          audit =
-              { createdDate = fourDaysAgo
-                updatedDate = fiveDaysAgo } }
+    let audit =
+        { createdDate = fourDaysAgo
+          updatedDate = fiveDaysAgo }
+
+    let whoisRecord = new WhoisRecord()
+    whoisRecord.createdDate <- oneDayAgo
+    whoisRecord.updatedDate <- twoDaysAgo
+    whoisRecord.expiresDate <- threeDaysFromNow
+    whoisRecord.status <- irrelevant
+    whoisRecord.audit <- audit
 
     let whoisResponse =
         MercuryLibrary.Mappers.toWhoisResponse now domain whoisRecord

@@ -7,13 +7,17 @@ type Audit =
     { createdDate: string
       updatedDate: string }
 
-[<CLIMutable>]
-type WhoisRecord =
-    { createdDate: string
-      updatedDate: string
-      expiresDate: string
-      status: string
-      audit: Audit }
+let defaultAudit =
+    { createdDate = String.Empty
+      updatedDate = String.Empty }
+
+[<AllowNullLiteral>]
+type WhoisRecord() =
+    member val createdDate = String.Empty with get, set
+    member val updatedDate = String.Empty with get, set
+    member val expiresDate = String.Empty with get, set
+    member val status = String.Empty with get, set
+    member val audit = defaultAudit with get, set
 
 type WhoisResponse =
     { Domain: string
