@@ -7,6 +7,11 @@ open MercuryLibrary.Models
 // --------------
 // TODO: This should ideally return Option<WhoisResponse> instead.
 let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) =
+    let res =
+        match whoisRecord with
+        | null -> ""
+        | _ -> "hey"
+
     let createdDate =
         match DateTime.TryParse whoisRecord.createdDate with
         | _, date -> date

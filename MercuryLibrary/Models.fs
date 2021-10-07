@@ -2,14 +2,10 @@
 
 open System
 
-[<CLIMutable>]
-type Audit =
-    { createdDate: string
-      updatedDate: string }
-
-let defaultAudit =
-    { createdDate = String.Empty
-      updatedDate = String.Empty }
+[<AllowNullLiteral>]
+type Audit() =
+    member val createdDate = String.Empty with get, set
+    member val updatedDate = String.Empty with get, set
 
 [<AllowNullLiteral>]
 type WhoisRecord() =
@@ -17,7 +13,7 @@ type WhoisRecord() =
     member val updatedDate = String.Empty with get, set
     member val expiresDate = String.Empty with get, set
     member val status = String.Empty with get, set
-    member val audit = defaultAudit with get, set
+    member val audit = Audit() with get, set
 
 type WhoisResponse =
     { Domain: string
