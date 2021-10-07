@@ -20,7 +20,7 @@ type WhoisResponse =
       DomainAgeInDays: float
       DomainLastUpdatedInDays: float
       DomainExpirationInDays: float
-      AuditCreated: DateTime
-      AuditUpdated: DateTime }
+      AuditCreated: Option<DateTime>
+      AuditUpdated: Option<DateTime> }
     override x.ToString() =
         $"\"{x.Domain}\": {x.DomainAgeInDays} days since domain creation, {x.DomainLastUpdatedInDays} days since domain last updated, {x.DomainExpirationInDays} until domain expires"

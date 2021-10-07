@@ -37,14 +37,63 @@ let ``toWhoisResponse all properties correct`` () =
     let whoisResponse =
         MercuryLibrary.Mappers.toWhoisResponse now domain whoisRecord
 
-    test <@ whoisResponse.Domain = domain @>
+    test <@ whoisResponse.Value.Domain = domain @>
 
-    test <@ whoisResponse.DomainAgeInDays = (now - DateTime.Parse(oneDayAgo)).TotalDays @>
+    test <@ whoisResponse.Value.DomainAgeInDays = (now - DateTime.Parse(oneDayAgo)).TotalDays @>
 
-    test <@ whoisResponse.DomainLastUpdatedInDays = (now - DateTime.Parse(twoDaysAgo)).TotalDays @>
+    test <@ whoisResponse.Value.DomainLastUpdatedInDays = (now - DateTime.Parse(twoDaysAgo)).TotalDays @>
 
-    test <@ whoisResponse.DomainExpirationInDays = (DateTime.Parse(threeDaysFromNow) - now).TotalDays @>
+    test <@ whoisResponse.Value.DomainExpirationInDays = (DateTime.Parse(threeDaysFromNow) - now).TotalDays @>
 
-    test <@ whoisResponse.AuditCreated.ToString() = fourDaysAgo @>
+    test <@ whoisResponse.Value.AuditCreated.Value.ToString() = fourDaysAgo @>
 
-    test <@ whoisResponse.AuditUpdated.ToString() = fiveDaysAgo @>
+    test <@ whoisResponse.Value.AuditUpdated.Value.ToString() = fiveDaysAgo @>
+
+[<Fact>]
+let ``toWhoisResponse all properties bar audit correct`` () =
+    let now = DateTime.UtcNow
+
+    let irrelevant = String.Empty
+
+    let domain = "google.com"
+
+    let oneDayAgo = now.AddDays(-1.0).ToString()
+
+    let twoDaysAgo = now.AddDays(-2.0).ToString()
+
+    let threeDaysFromNow = now.AddDays(3.0).ToString()
+
+    let whoisRecord = WhoisRecord()
+    whoisRecord.createdDate <- oneDayAgo
+    whoisRecord.updatedDate <- twoDaysAgo
+    whoisRecord.expiresDate <- threeDaysFromNow
+    whoisRecord.status <- irrelevant
+    whoisRecord.audit <- null
+
+    let whoisResponse =
+        MercuryLibrary.Mappers.toWhoisResponse now domain whoisRecord
+
+    test <@ whoisResponse.Value.Domain = domain @>
+
+    test <@ whoisResponse.Value.DomainAgeInDays = (now - DateTime.Parse(oneDayAgo)).TotalDays @>
+
+    test <@ whoisResponse.Value.DomainLastUpdatedInDays = (now - DateTime.Parse(twoDaysAgo)).TotalDays @>
+
+    test <@ whoisResponse.Value.DomainExpirationInDays = (DateTime.Parse(threeDaysFromNow) - now).TotalDays @>
+
+    test <@ true = whoisResponse.Value.AuditCreated.IsNone @>
+
+    test <@ true = whoisResponse.Value.AuditUpdated.IsNone @>
+
+[<Fact>]
+let ``WhoisRecord missing`` () =
+    let now = DateTime.UtcNow
+
+    let domain = "google.com"
+
+    let whoisRecord = null
+    
+    let whoisResponse =
+        MercuryLibrary.Mappers.toWhoisResponse now domain whoisRecord
+
+    test <@ true = whoisResponse.IsNone @>

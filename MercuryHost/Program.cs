@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MercuryLibrary;
+using Microsoft.FSharp.Core;
 
 namespace MercuryHost
 {
@@ -18,7 +19,7 @@ namespace MercuryHost
 
             var domain = args[1];
 
-            Models.WhoisResponse response = await GetWhoisResponse(
+            FSharpOption<Models.WhoisResponse> response = await GetWhoisResponse(
                 apiUrlFormat,
                 domain);
 
@@ -26,11 +27,11 @@ namespace MercuryHost
             Log("function execution finished");
         }
 
-        private static async Task<Models.WhoisResponse> GetWhoisResponse(
+        private static async Task<FSharpOption<Models.WhoisResponse>> GetWhoisResponse(
             string apiUrlFormat,
             string domain)
         {
-            Models.WhoisResponse response = null;
+            FSharpOption<Models.WhoisResponse> response = null;
 
             InputValidation.whoisInputValidation(apiUrlFormat, domain);
 
@@ -55,7 +56,7 @@ namespace MercuryHost
                 response = Mappers.toWhoisResponse(
                     DateTime.Now,
                     domain,
-                    (Models.WhoisRecord) serializer.Deserialize(reader));
+                    (Models.WhoisRecord)serializer.Deserialize(reader));
             }
 
             return response;
