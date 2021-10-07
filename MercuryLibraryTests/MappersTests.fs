@@ -23,11 +23,11 @@ let ``toWhoisResponse all properties correct`` () =
 
     let fiveDaysAgo = now.AddDays(-5.0).ToString()
 
-    let audit =
-        { createdDate = fourDaysAgo
-          updatedDate = fiveDaysAgo }
+    let audit = Audit()
+    audit.createdDate <- fourDaysAgo
+    audit.updatedDate <- fiveDaysAgo
 
-    let whoisRecord = new WhoisRecord()
+    let whoisRecord = WhoisRecord()
     whoisRecord.createdDate <- oneDayAgo
     whoisRecord.updatedDate <- twoDaysAgo
     whoisRecord.expiresDate <- threeDaysFromNow

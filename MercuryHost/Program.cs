@@ -51,13 +51,11 @@ namespace MercuryHost
                 var serializer = new XmlSerializer(typeof(Models.WhoisRecord));
 
                 await using Stream reader = await apiResponse.Content.ReadAsStreamAsync(cancellationToken);
-                
-                var whoisRecord = (Models.WhoisRecord) serializer.Deserialize(reader);
-                
+
                 response = Mappers.toWhoisResponse(
                     DateTime.Now,
                     domain,
-                    whoisRecord);
+                    (Models.WhoisRecord) serializer.Deserialize(reader));
             }
 
             return response;
