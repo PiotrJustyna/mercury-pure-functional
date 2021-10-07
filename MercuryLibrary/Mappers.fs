@@ -9,22 +9,25 @@ let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) 
     else
         let createdDate =
             match DateTime.TryParse whoisRecord.createdDate with
-            | _, date -> date
+            | true, date -> Option.Some date
+            | false, _ -> Option.None
 
         let updatedDate =
             match DateTime.TryParse whoisRecord.updatedDate with
-            | _, date -> date
+            | true, date -> Option.Some date
+            | false, _ -> Option.None
 
         let expiresDate =
             match DateTime.TryParse whoisRecord.expiresDate with
-            | _, date -> date
+            | true, date -> Option.Some date
+            | false, _ -> Option.None
 
         if obj.ReferenceEquals(whoisRecord.audit, null) then
             let whoisResponse =
                 { Domain = domain
-                  DomainAgeInDays = BusinessLogic.differenceInDays createdDate now
-                  DomainLastUpdatedInDays = BusinessLogic.differenceInDays updatedDate now
-                  DomainExpirationInDays = BusinessLogic.differenceInDays now expiresDate
+                  DomainAgeInDays = BusinessLogic.differenceInDaysOptionalStart createdDate now
+                  DomainLastUpdatedInDays = BusinessLogic.differenceInDaysOptionalStart updatedDate now
+                  DomainExpirationInDays = BusinessLogic.differenceInDaysOptionalEnd now expiresDate
                   AuditCreated = Option.None
                   AuditUpdated = Option.None }
 
@@ -42,9 +45,9 @@ let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) 
 
             let whoisResponse =
                 { Domain = domain
-                  DomainAgeInDays = BusinessLogic.differenceInDays createdDate now
-                  DomainLastUpdatedInDays = BusinessLogic.differenceInDays updatedDate now
-                  DomainExpirationInDays = BusinessLogic.differenceInDays now expiresDate
+                  DomainAgeInDays = BusinessLogic.differenceInDaysOptionalStart createdDate now
+                  DomainLastUpdatedInDays = BusinessLogic.differenceInDaysOptionalStart updatedDate now
+                  DomainExpirationInDays = BusinessLogic.differenceInDaysOptionalEnd now expiresDate
                   AuditCreated = auditCreatedDate
                   AuditUpdated = auditUpdatedDate }
 

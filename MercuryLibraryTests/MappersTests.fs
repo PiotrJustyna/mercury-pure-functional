@@ -39,11 +39,11 @@ let ``toWhoisResponse all properties correct`` () =
 
     test <@ whoisResponse.Value.Domain = domain @>
 
-    test <@ whoisResponse.Value.DomainAgeInDays = (now - DateTime.Parse(oneDayAgo)).TotalDays @>
+    test <@ whoisResponse.Value.DomainAgeInDays = Option.Some (now - DateTime.Parse(oneDayAgo)).TotalDays @>
 
-    test <@ whoisResponse.Value.DomainLastUpdatedInDays = (now - DateTime.Parse(twoDaysAgo)).TotalDays @>
+    test <@ whoisResponse.Value.DomainLastUpdatedInDays = Option.Some (now - DateTime.Parse(twoDaysAgo)).TotalDays @>
 
-    test <@ whoisResponse.Value.DomainExpirationInDays = (DateTime.Parse(threeDaysFromNow) - now).TotalDays @>
+    test <@ whoisResponse.Value.DomainExpirationInDays = Option.Some (DateTime.Parse(threeDaysFromNow) - now).TotalDays @>
 
     test <@ whoisResponse.Value.AuditCreated.Value.ToString() = fourDaysAgo @>
 
@@ -75,11 +75,11 @@ let ``toWhoisResponse all properties bar audit correct`` () =
 
     test <@ whoisResponse.Value.Domain = domain @>
 
-    test <@ whoisResponse.Value.DomainAgeInDays = (now - DateTime.Parse(oneDayAgo)).TotalDays @>
+    test <@ whoisResponse.Value.DomainAgeInDays = Option.Some (now - DateTime.Parse(oneDayAgo)).TotalDays @>
 
-    test <@ whoisResponse.Value.DomainLastUpdatedInDays = (now - DateTime.Parse(twoDaysAgo)).TotalDays @>
+    test <@ whoisResponse.Value.DomainLastUpdatedInDays = Option.Some (now - DateTime.Parse(twoDaysAgo)).TotalDays @>
 
-    test <@ whoisResponse.Value.DomainExpirationInDays = (DateTime.Parse(threeDaysFromNow) - now).TotalDays @>
+    test <@ whoisResponse.Value.DomainExpirationInDays = Option.Some (DateTime.Parse(threeDaysFromNow) - now).TotalDays @>
 
     test <@ true = whoisResponse.Value.AuditCreated.IsNone @>
 
