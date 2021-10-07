@@ -3,38 +3,49 @@ module MercuryLibrary.Mappers
 open System
 open MercuryLibrary.Models
 
-// 2021-10-06 PJ:
-// --------------
-// TODO: This should ideally return Option<WhoisResponse> instead.
 let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) =
-    let res =
-        match whoisRecord with
-        | null -> ""
-        | _ -> "hey"
+    if obj.ReferenceEquals(whoisRecord, null) then
+        Option<WhoisResponse>.None
+    else
+        let createdDate =
+            match DateTime.TryParse whoisRecord.createdDate with
+            | _, date -> date
 
-    let createdDate =
-        match DateTime.TryParse whoisRecord.createdDate with
-        | _, date -> date
+        let updatedDate =
+            match DateTime.TryParse whoisRecord.updatedDate with
+            | _, date -> date
 
-    let updatedDate =
-        match DateTime.TryParse whoisRecord.updatedDate with
-        | _, date -> date
+        let expiresDate =
+            match DateTime.TryParse whoisRecord.expiresDate with
+            | _, date -> date
 
-    let expiresDate =
-        match DateTime.TryParse whoisRecord.expiresDate with
-        | _, date -> date
+        if obj.ReferenceEquals(whoisRecord.audit, null) then
+            let whoisResponse =
+                { Domain = domain
+                  DomainAgeInDays = BusinessLogic.differenceInDays createdDate now
+                  DomainLastUpdatedInDays = BusinessLogic.differenceInDays updatedDate now
+                  DomainExpirationInDays = BusinessLogic.differenceInDays now expiresDate
+                  AuditCreated = Option.None
+                  AuditUpdated = Option.None }
 
-    let auditCreatedDate =
-        match DateTime.TryParse whoisRecord.audit.createdDate with
-        | _, date -> date
+            Option<WhoisResponse>.Some whoisResponse
+        else
+            let auditCreatedDate =
+                match DateTime.TryParse whoisRecord.audit.createdDate with
+                | true, date -> Option.Some date
+                | false, _ -> Option.None
 
-    let auditUpdatedDate =
-        match DateTime.TryParse whoisRecord.audit.updatedDate with
-        | _, date -> date
+            let auditUpdatedDate =
+                match DateTime.TryParse whoisRecord.audit.updatedDate with
+                | true, date -> Option.Some date
+                | false, _ -> Option.None
 
-    { Domain = domain
-      DomainAgeInDays = BusinessLogic.differenceInDays createdDate now
-      DomainLastUpdatedInDays = BusinessLogic.differenceInDays updatedDate now
-      DomainExpirationInDays = BusinessLogic.differenceInDays now expiresDate
-      AuditCreated = auditCreatedDate
-      AuditUpdated = auditUpdatedDate }
+            let whoisResponse =
+                { Domain = domain
+                  DomainAgeInDays = BusinessLogic.differenceInDays createdDate now
+                  DomainLastUpdatedInDays = BusinessLogic.differenceInDays updatedDate now
+                  DomainExpirationInDays = BusinessLogic.differenceInDays now expiresDate
+                  AuditCreated = auditCreatedDate
+                  AuditUpdated = auditUpdatedDate }
+
+            Option<WhoisResponse>.Some whoisResponse
