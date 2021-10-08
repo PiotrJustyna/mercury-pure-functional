@@ -3,24 +3,20 @@ module MercuryLibrary.Mappers
 open System
 open MercuryLibrary.Models
 
+let parseDate (date: string) =
+    match DateTime.TryParse date with
+    | true, date -> Option.Some date
+    | false, _ -> Option.None
+
 let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) =
     if obj.ReferenceEquals(whoisRecord, null) then
         Option<WhoisResponse>.None
     else
-        let createdDate =
-            match DateTime.TryParse whoisRecord.createdDate with
-            | true, date -> Option.Some date
-            | false, _ -> Option.None
+        let createdDate = parseDate whoisRecord.createdDate
 
-        let updatedDate =
-            match DateTime.TryParse whoisRecord.updatedDate with
-            | true, date -> Option.Some date
-            | false, _ -> Option.None
+        let updatedDate = parseDate whoisRecord.updatedDate
 
-        let expiresDate =
-            match DateTime.TryParse whoisRecord.expiresDate with
-            | true, date -> Option.Some date
-            | false, _ -> Option.None
+        let expiresDate = parseDate whoisRecord.expiresDate
 
         if obj.ReferenceEquals(whoisRecord.audit, null) then
             let whoisResponse =
@@ -33,15 +29,9 @@ let toWhoisResponse (now: DateTime) (domain: string) (whoisRecord: WhoisRecord) 
 
             Option<WhoisResponse>.Some whoisResponse
         else
-            let auditCreatedDate =
-                match DateTime.TryParse whoisRecord.audit.createdDate with
-                | true, date -> Option.Some date
-                | false, _ -> Option.None
+            let auditCreatedDate = parseDate whoisRecord.audit.createdDate
 
-            let auditUpdatedDate =
-                match DateTime.TryParse whoisRecord.audit.updatedDate with
-                | true, date -> Option.Some date
-                | false, _ -> Option.None
+            let auditUpdatedDate = parseDate whoisRecord.audit.updatedDate
 
             let whoisResponse =
                 { Domain = domain

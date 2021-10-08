@@ -16,7 +16,7 @@ Here is the order in which the information flows and the types are constructed:
 
 `xml -> WhoisRecord -> WhoisResponse`
 
-Unlike C#, F# does not treat `null` as a first-class citizen. Presence or absence of values is usually preferred to be indicated using the `Option` type. However, when interfacing C# code, one should remember that values arriving from C# could be null. To handle such scenarios, I initially proposed null checking at the C# side, but there are better ways of achieving this and in the current version of the code, I propose to null check at the F# side.
+Unlike C#, F# does not treat `null` as a first-class citizen. Presence or absence of values is usually preferred to be indicated using the `Option` type. However, when interfacing C# code, one should remember that values arriving from C# could be `null`. To handle such scenarios, I initially proposed `null` checking on the C# side, but there are better ways to `null` check and in the current version of the code, I propose to `null` check on the F# side.
 
 To achieve this, our models are now divided into two categories:
 
