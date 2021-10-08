@@ -10,6 +10,44 @@ Functional type of code with explicitly separated pure and effectful responsibil
 12:01:34.507: function execution finished
 ```
 
+## null checking
+
+Here is the order in which the information flows and the types are constructed:
+
+`xml -> WhoisRecord -> WhoisResponse`
+
+Unlike C#, F# does not treat `null` as a first-class citizen. Presence or absence of values is usually preferred to be indicated using the `Option` type. However, when interfacing C# code, one should remember that values arriving from C# could be null. To handle such scenarios, I initially proposed null checking at the C# side, but there are better ways of achieving this and in the current version of the code, I propose to null check at the F# side.
+
+To achieve this, our models are now divided into two categories:
+
+* [records](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/records) - simple, ideally immutable F# models. In our case, records are used internally, in F#-F# interactions. Example:
+
+  ```f#
+  type WhoisResponse =
+      {   Domain: string
+          DomainAgeInDays: Option<float>
+          DomainLastUpdatedInDays: Option<float>
+          DomainExpirationInDays: Option<float>
+          AuditCreated: Option<DateTime>
+          AuditUpdated: Option<DateTime> }
+  ```
+  What is worth noting is that most fields in this record are of type `Option<T>`, which indicates that they could be missing (as they are mapped from a type which models our xml, and the xml is not guaranteed to be always correct).
+
+* [classes](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/classes) - more complex, C#-like models, ideal for interfacing C# code. In our case, classes are used in C#-F# interactions, specifically to deserialize xml. Example:
+
+  ```f#
+  [<AllowNullLiteral>]
+  type Audit() =
+      member val createdDate = String.Empty with get, set
+      member val updatedDate = String.Empty with get, set
+  ```
+  What becomes immediately obvious is:
+  * parameterless constructor exposed
+  * type is decorated with the `AllowNullLiteral` attribute indicating that its values can be `null` (problems with parsing, incorrectly defined xml, etc.)
+  * properties (`createdDate`, `updatedDate`) defined explicitly and made mutable (`with get, set`) to be automatically set during deserialization.
+
+All unit tests validating null checking are also done on the F# side.
+
 ## unit testing
 
 This repository uses [xunit](https://github.com/xunit/xunit) + [unquote](https://github.com/SwensenSoftware/unquote).
